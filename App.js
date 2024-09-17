@@ -1,13 +1,15 @@
 import React, { useState, createContext, useContext } from 'react';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
-import { useColorScheme, StyleSheet, View, Text, Button } from 'react-native';
+import { useColorScheme, StyleSheet, View, Text } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import TodoList from './components/TodoList'; // Assuming you have this
-import CustomDrawerContent from './components/CustomDrawer'; // Assuming you have this
+import TodoList from './components/TodoList'; 
+import CustomDrawerContent from './components/CustomDrawer';
 import SettingScreen from './components/SettingScreen';
 import FeedbackScreen from './components/FeedbackScreen';
 import SplashScreen from './components/SplashScreen';
+import LoginScreen from './components/LoginScreen';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Theme Context to share theme information
 const ThemeContext = createContext();
@@ -16,95 +18,80 @@ export const useTheme = () => useContext(ThemeContext);
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-function AppNavigator() {
-  return (
-    <Stack.Navigator initialRouteName="Splash">
-      <Stack.Screen 
-        name="Splash" 
-        component={SplashScreen} 
-        options={{ headerShown: false }} // Hides the header for splash screen
-      />
-      <Stack.Screen 
-        name="Main" 
-        component={DrawerNavigator} 
-        options={{ headerShown: false }} // Hides the header for main content
-      />
-    </Stack.Navigator>
-  );
-}
-
-function DrawerNavigator() {
-  const { theme } = useTheme(); // Access theme from context
+function DrawerNavigator({ user }) {
+  const { theme } = useTheme();
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        headerShown: true, // Make sure header is visible with menu icon
-        headerTitle: "Home", // Set header title
+        headerShown: true,
+        headerTitle: "Home",
         headerStyle: {
-          backgroundColor: theme.colors.background, // Change background color for header
+          backgroundColor: theme.colors.background,
         },
-        headerTintColor: theme.colors.text, // Adjust header text color
+        headerTintColor: theme.colors.text,
         drawerStyle: { 
           width: 240,
-          backgroundColor: theme.colors.background, // Change drawer background according to theme
+          backgroundColor: theme.colors.background,
         },
-        drawerInactiveTintColor: theme.colors.text, // Adjust text color for menu items
-        drawerActiveTintColor: '#fff', // Keep the active item highlighted
+        drawerInactiveTintColor: theme.colors.text,
+        drawerActiveTintColor: '#fff',
+        headerRight: () => (
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 15 }}>
+            <MaterialIcons name="account-circle" size={30} color={theme.colors.text} />
+            <Text style={{ color: theme.colors.text, marginLeft: 5 }}>{user?.username}</Text>
+          </View>
+        ),
       }}
     >
-      {/* Add Home, Settings, and Feedback options */}
       <Drawer.Screen name="Home" component={TodoList} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
       <Drawer.Screen name="Feedback" component={FeedbackScreen} />
-
-      {/* Add additional options as per the image, including doctor appointments */}
-      <Drawer.Screen name="Doctor Appointment" component={TodoList} options={{ drawerLabel: "Doctor Appointment" }} />
-      <Drawer.Screen name="Meeting at School" component={TodoList} options={{ drawerLabel: "Meeting at School" }} />
     </Drawer.Navigator>
   );
 }
 
-export default function App() {
-  const systemScheme = useColorScheme(); // Detects system theme (light/dark)
-  const [theme, setTheme] = useState(systemScheme === 'dark' ? DarkTheme : DefaultTheme);
+function AppNavigator({ user }) {
+  return (
+    <Stack.Navigator initialRouteName="Splash">
+      <Stack.Screen 
+        name="Splash" 
+        component={SplashScreen} 
+        options={{ headerShown: false }} 
+      />
+      <Stack.Screen 
+        name="Login" 
+        options={{ headerShown: false }} 
+      >
+        {(props) => <LoginScreen {...props} setUser={user.setUser} />}
+      </Stack.Screen>
+      <Stack.Screen 
+        name="Main" 
+        options={{ headerShown: false }}
+      >
+        {(props) => <DrawerNavigator {...props} user={user} />}
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
+}
 
-  // Toggle between Light and Dark themes
+export default function App() {
+  const systemScheme = useColorScheme();
+  const [theme, setTheme] = useState(systemScheme === 'dark' ? DarkTheme : DefaultTheme);
+  const [user, setUser] = useState(null);  // Store user info after login
+
   const toggleTheme = () => {
     setTheme((currentTheme) =>
       currentTheme.dark ? DefaultTheme : DarkTheme
-    ); // Toggle between themes
+    );
   };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       <NavigationContainer theme={theme}>
-        <AppNavigator />
+        <AppNavigator user={{ username: user?.username, setUser }} />
       </NavigationContainer>
     </ThemeContext.Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  themeToggleContainer: {
-    position: 'absolute',
-    bottom: 50, // Adjust the button position
-    right: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  modalContent: {
-    width: 350,
-    padding: 25,
-    backgroundColor: 'white',
-    borderRadius: 15,
-    alignItems: 'center',
-  },
-});

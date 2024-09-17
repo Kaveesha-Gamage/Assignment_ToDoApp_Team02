@@ -10,7 +10,7 @@ const FeedbackScreen = () => {
   const [selectedTags, setSelectedTags] = useState([]);
 
   const navigation = useNavigation();
-  const { theme } = useTheme(); // Access the theme
+  const { theme } = useTheme(); 
 
   const tags = ['Task Management', 'User Interface', 'Task Reminders', 'Performance', 'Customization Options', 'Collaboration Features', 'Notification System', 'Ease of Use', 'Accessibility Features'];
 
@@ -38,7 +38,7 @@ const FeedbackScreen = () => {
       case 5:
         return '#008000';
       default:
-        return theme.colors.text; // Use theme text color for unselected
+        return theme.colors.text;
     }
   };
 
