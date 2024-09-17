@@ -1,24 +1,59 @@
-import React, { useEffect } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, Image, StyleSheet, Animated, Easing } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const scaleAnim = useRef(new Animated.Value(1)).current; 
+  const opacityAnim = useRef(new Animated.Value(0)).current; 
 
   useEffect(() => {
-    // Automatically navigate to the Main screen after 5 seconds
-    const timer = setTimeout(() => {
-      navigation.replace('Main'); // Corrected the screen name to 'Main'
-    }, 5000);
+    // Image animation
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.2,
+        duration: 1000,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Title animation
+      Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 1000,
+        easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
+      }).start();
+    });
 
-    return () => clearTimeout(timer); // Cleanup the timer when the component unmounts
-  }, [navigation]);
+    const timer = setTimeout(() => {
+      navigation.replace('Login');
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [navigation, scaleAnim, opacityAnim]);
 
   return (
-    <View style={styles.container}>
-      <Image source={require('../assets/to-do-list.png')} style={styles.image} />
-      <Text style={styles.title}>To-Do List</Text>
-    </View>
+    <LinearGradient
+      colors={['#6A5ACD', '#8A2BE2', '#DA70D6']}
+      style={styles.container}
+    >
+      <Animated.Image
+        source={require('../assets/to-do-list.png')}
+        style={[styles.image, { transform: [{ scale: scaleAnim }] }]}
+      />
+      <Animated.View style={{ opacity: opacityAnim }}>
+        <Text style={styles.title}>To-Do List</Text>
+        <Text style={styles.subtitle}>Task It. Track It. Complete It!</Text>
+      </Animated.View>
+    </LinearGradient>
   );
 };
 
@@ -27,17 +62,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#CF9FFF', // Adjusted color
   },
   image: {
-    width: 100,
-    height: 100,
-    marginBottom: 20,
+    width: 120,
+    height: 120,
+    marginBottom: 30,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#FFF',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#FFF',
+    marginTop: 10,
+    fontStyle: 'italic',
   },
 });
 
