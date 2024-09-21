@@ -39,13 +39,15 @@ function DrawerNavigator({ user }) {
         drawerActiveTintColor: '#fff',
         headerRight: () => (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginRight: 15 }}>
+            <Text style={{ color: theme.colors.text, marginRight: 10 }}>{user?.username}</Text>
             <MaterialIcons name="account-circle" size={30} color={theme.colors.text} />
-            <Text style={{ color: theme.colors.text, marginLeft: 5 }}>{user?.username}</Text>
           </View>
         ),
       }}
     >
-      <Drawer.Screen name="Home" component={TodoList} />
+      <Drawer.Screen name="Home">
+        {(props) => <TodoList {...props} theme={theme} />}
+      </Drawer.Screen>
       <Drawer.Screen name="Settings" component={SettingScreen} />
       <Drawer.Screen name="Feedback" component={FeedbackScreen} />
     </Drawer.Navigator>

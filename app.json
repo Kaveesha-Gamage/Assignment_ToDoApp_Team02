@@ -19,7 +19,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.todoapp2024"
+      "package": "com.anonymous.todoapp2024",
+      "jsEngine": "hermes"  // Add this line to enable Hermes for Android
     },
     "web": {
       "favicon": "./assets/favicon.png"

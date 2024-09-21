@@ -33,7 +33,7 @@ const CustomDrawerContent = (props) => {
         <Text style={[styles.menuText, { color: theme.colors.text }]}>Upgrade to PRO</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.menuItem}>
+      <TouchableOpacity style={styles.menuItem} onPress={() => props.navigation.navigate('StarredTasks')}>
         <MaterialCommunityIcons name="star" size={24} color="#AA336A" style={styles.icon} />
         <Text style={[styles.menuText, { color: theme.colors.text }]}>Star Tasks</Text>
       </TouchableOpacity>
