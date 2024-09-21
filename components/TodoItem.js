@@ -217,17 +217,6 @@ export default function TodoItem({ task, deleteTask, toggleCompleted, editTask, 
       Due Time: {task.dueTime ? new Date(task.dueTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'None'}
     </Text>
 		
-		  
-		
-         
-		 
-		 
-		 
-		 
-		 
-		 
-		 
-		 
 		  <Text style={styles.detailText}>
       Created At: {task.id ? new Date(task.id).toLocaleString([], { hour: '2-digit', minute: '2-digit', month: 'long', day: 'numeric', year: 'numeric' }) : 'None'}
       </Text>

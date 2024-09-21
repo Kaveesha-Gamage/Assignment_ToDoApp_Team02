@@ -390,8 +390,6 @@ const TodoList = () => {
         <TouchableOpacity style={styles.sortButton} onPress={() => setSortOption('Date')}>
           <Text style={styles.sortButtonText}>Sort by Date & Time</Text>
         </TouchableOpacity>
-        </View>
-        <View style={styles.sortButtonContainer}>
         <TouchableOpacity style={styles.sortButton} onPress={() => setSortOption('Completed')}>
           <Text style={styles.sortButtonText}>Sort by Completed</Text>
         </TouchableOpacity>
